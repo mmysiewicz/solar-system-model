@@ -144,7 +144,7 @@ namespace SolarSystem
         {
             Vector3 relativePosition = OrbitPhysicsCalculator.Circular.GetPosition(radius, angle);
             Vector3 rotatedPosition = Quaternion.Euler(inclination, 0, 0) * relativePosition;
-            passenger.Model.localPosition = center + rotatedPosition;
+            passenger.Model.position = center + rotatedPosition;
         }
     }
 }

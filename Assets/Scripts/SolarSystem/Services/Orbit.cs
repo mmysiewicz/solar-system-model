@@ -48,7 +48,7 @@ namespace SolarSystem
                 Vector3 rotatedPosition = Quaternion.Euler(_data.Inclination, 0, 0) * relativePosition;
                 
                 //Aplikacja pozycji pasażerów wobec obiektu centralnego
-                passenger.Model.localPosition = positionOfCenter + rotatedPosition;
+                passenger.Model.position = positionOfCenter + rotatedPosition;
             }
             
         }
@@ -62,25 +62,41 @@ namespace SolarSystem
             return _centerPoint;
         }
         
+        // Znajduje pasażera tej orbity na podstawie jego Transform (modelu w scenie).
+        // Używane przez SelectableBody do rozpoznania, który CelestialObject
+        // odpowiada klikniętemu obiektowi.
+        public CelestialObject GetPassengerByTransform(Transform modelTransform)
+        {
+            return _orbitPassengers.Find(p => p.Model == modelTransform);
+        }
         
-        public void RemovePassenger(CelestialObject passenger)
-        {
-            if (_orbitPassengers.Contains(passenger))
-                _orbitPassengers.Remove(passenger);
-        }
-
-        public void AddPassenger(CelestialObject passenger)
-        {
-            if (!_orbitPassengers.Contains(passenger))
-                _orbitPassengers.Add(passenger);
-        }
-
         public float GetMainPassengerAngle()
         {
             // Zwraca kąt pierwszego obiektu na orbicie (np. planety, do której lecimy)
             if (_orbitPassengers.Count > 0)
                 return _orbitPassengers[0].CurrentAngle;
             return 0;
+        }
+        
+        public void AddPassenger(CelestialObject passenger)
+        {
+            if (!_orbitPassengers.Contains(passenger))
+                _orbitPassengers.Add(passenger);
+        }
+        public void RemovePassenger(CelestialObject passenger)
+        {
+            if (_orbitPassengers.Contains(passenger))
+                _orbitPassengers.Remove(passenger);
+        }
+        
+        private void OnEnable()
+        {
+            OrbitRegistry.Register(this);
+        }
+ 
+        private void OnDisable()
+        {
+            OrbitRegistry.Unregister(this);
         }
     }
 }

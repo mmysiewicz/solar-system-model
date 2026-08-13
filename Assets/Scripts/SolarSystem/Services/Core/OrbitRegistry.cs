@@ -10,7 +10,7 @@ namespace SolarSystem
 
         public static void Register(Orbit orbit)
         {
-            if (orbit != null && _orbits.Contains(orbit)) 
+            if (orbit != null && !_orbits.Contains(orbit)) 
                 _orbits.Add(orbit);
         }
 
