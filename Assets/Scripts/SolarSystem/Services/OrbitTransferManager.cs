@@ -140,7 +140,6 @@ namespace SolarSystem
             return angle;
         }
         
-        
         private void UpdateObjectPosition(CelestialObject passenger, Vector3 center, float radius, float angle, float inclination)
         {
             Vector3 relativePosition = OrbitPhysicsCalculator.Circular.GetPosition(radius, angle);
