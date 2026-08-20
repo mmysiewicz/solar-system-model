@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 
@@ -8,6 +9,7 @@ namespace SolarSystem
     public class Orbit : MonoBehaviour, IMovable
     {
         [SerializeField] private Transform _centerPoint;
+        [SerializeField] [CanBeNull] private Orbit _parent;
         [SerializeField] private List<CelestialObject> _orbitPassengers = new List<CelestialObject>();
         [SerializeField] private OrbitData _data;
         
@@ -42,7 +44,7 @@ namespace SolarSystem
                 
                 //Logika wyznaczania pozycji przez wspólny kalkulator OrbitPhysicsCalculator
                 Vector3 relativePosition =
-                    OrbitPhysicsCalculator.Circular.GetPosition(_data.SemiMajorAxis, passenger.CurrentAngle);
+                    OrbitMath.Circular.GetPosition(_data.SemiMajorAxis, passenger.CurrentAngle);
                 
                 //Aplikacja nachylenia pasażera, według danych orbity
                 Vector3 rotatedPosition = Quaternion.Euler(_data.Inclination, 0, 0) * relativePosition;
@@ -52,6 +54,18 @@ namespace SolarSystem
             }
             
         }
+        
+        public void AddPassenger(CelestialObject passenger)
+        {
+            if (!_orbitPassengers.Contains(passenger))
+                _orbitPassengers.Add(passenger);
+        }
+        public void RemovePassenger(CelestialObject passenger)
+        {
+            if (_orbitPassengers.Contains(passenger))
+                _orbitPassengers.Remove(passenger);
+        }
+        
         public void SetData(OrbitData data) => _data = data;
         public OrbitData getData()
         {
@@ -78,17 +92,13 @@ namespace SolarSystem
             return 0;
         }
         
-        public void AddPassenger(CelestialObject passenger)
+        [CanBeNull]
+        public Orbit Parent
         {
-            if (!_orbitPassengers.Contains(passenger))
-                _orbitPassengers.Add(passenger);
+            get => _parent;
+            set => _parent = value;
         }
-        public void RemovePassenger(CelestialObject passenger)
-        {
-            if (_orbitPassengers.Contains(passenger))
-                _orbitPassengers.Remove(passenger);
-        }
-        
+
         private void OnEnable()
         {
             OrbitRegistry.Register(this);

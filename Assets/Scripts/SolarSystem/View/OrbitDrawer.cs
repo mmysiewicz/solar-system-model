@@ -56,7 +56,7 @@ namespace SolarSystem.View
             for (int i = 0; i < _segments; i++)
             {
                 float angle = (i /  (float)_segments) * Mathf.PI * 2f;
-                Vector3 relativePosition = OrbitPhysicsCalculator.Circular.GetPosition(data.SemiMajorAxis, angle);
+                Vector3 relativePosition = OrbitMath.Circular.GetPosition(data.SemiMajorAxis, angle);
                 Vector3 rotatedPosition = Quaternion.Euler(data.Inclination, 0, 0) *  relativePosition;
                 _lineRenderer.SetPosition(i, centerPoint + rotatedPosition);
             }
